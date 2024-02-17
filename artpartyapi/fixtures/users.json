@@ -1,0 +1,12 @@
+[
+  {
+    "model": "artpartyapi.user",
+    "pk": 1,
+    "fields": {
+      "name": "Stacey Vanyo",
+      "email": "sbvanyo@gmail.com",
+      "img": "gs://artparty-fb1dd.appspot.com/sv_headshot.jpeg",
+      "uid": "xtvavgWFceO7sWE3IDHN2nNwE2G3"
+    }
+  }
+]

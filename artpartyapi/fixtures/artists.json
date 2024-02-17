@@ -1,0 +1,30 @@
+[
+  {
+    "model": "artpartyapi.artist",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "name": "Stacey",
+      "img": "gs://artparty-fb1dd.appspot.com/sv_headshot.jpeg"
+    }
+  },
+  {
+    "model": "artpartyapi.artist",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "name": "Jo",
+      "img": "gs://artparty-fb1dd.appspot.com/sv_headshot.jpeg"
+    }
+  },
+  {
+    "model": "artpartyapi.artist",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "name": "Milo",
+      "img": "gs://artparty-fb1dd.appspot.com/sv_headshot.jpeg"
+    }
+  }
+]
+ 
