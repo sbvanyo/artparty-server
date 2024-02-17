@@ -12,9 +12,12 @@ class ArtistView(ViewSet):
     def retrieve(self, request, pk):
         """Handle GET requests for single artist
         Returns: Response -- JSON serialized artist"""
-        artist = Artist.objects.get(pk=pk)
-        serializer = ArtistSerializer(artist)
-        return Response(serializer.data)
+        try:
+            artist = Artist.objects.get(pk=pk)
+            serializer = ArtistSerializer(artist)
+            return Response(serializer.data)
+        except Artist.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
 
     def list(self, request):

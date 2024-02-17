@@ -12,9 +12,12 @@ class TagView(ViewSet):
     def retrieve(self, request, pk):
         """Handle GET requests for single tag
         Returns: Response -- JSON serialized tag"""
-        tag = Tag.objects.get(pk=pk)
-        serializer = TagSerializer(tag)
-        return Response(serializer.data)
+        try:
+            tag = Tag.objects.get(pk=pk)
+            serializer = TagSerializer(tag)
+            return Response(serializer.data)
+        except Tag.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
 
     def list(self, request):

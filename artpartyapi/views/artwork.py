@@ -12,9 +12,12 @@ class ArtworkView(ViewSet):
     def retrieve(self, request, pk):
         """Handle GET requests for single artwork
         Returns: Response -- JSON serialized artwork"""
-        artwork = Artwork.objects.get(pk=pk)
-        serializer = ArtworkSerializer(artwork)
-        return Response(serializer.data)
+        try:
+            artwork = Artwork.objects.get(pk=pk)
+            serializer = ArtworkSerializer(artwork)
+            return Response(serializer.data)
+        except Artwork.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
 
     def list(self, request):

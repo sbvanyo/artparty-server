@@ -12,9 +12,12 @@ class ArtworkTagView(ViewSet):
     def retrieve(self, request, pk):
         """Handle GET requests for single artworktag
         Returns: Response -- JSON serialized artworktag"""
-        artworktag = ArtworkTag.objects.get(pk=pk)
-        serializer = ArtworkTagSerializer(artworktag)
-        return Response(serializer.data)
+        try:
+            artworktag = ArtworkTag.objects.get(pk=pk)
+            serializer = ArtworkTagSerializer(artworktag)
+            return Response(serializer.data)
+        except ArtworkTag.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
 
     def list(self, request):
