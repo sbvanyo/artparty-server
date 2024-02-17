@@ -11,5 +11,6 @@ class Artwork(models.Model):
     description = models.TextField()
     date = models.DateField()
     age = models.IntegerField()
+    featured = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)

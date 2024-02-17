@@ -1,0 +1,62 @@
+[
+  {
+    "model": "artpartyapi.artwork",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "artist": 1,
+      "title": "sv-artwork-1",
+      "img": "https://unsplash.com/photos/three-silver-paint-brushes-on-white-textile-D5nh6mCW52c",
+      "medium": "oil paint",
+      "description": "this is an oil painting",
+      "date": "2024-02-17",
+      "age": 32,
+      "featured": true
+    }
+  },
+  {
+    "model": "artpartyapi.artwork",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "artist": 1,
+      "title": "sv-artwork-2",
+      "img": "https://unsplash.com/photos/three-silver-paint-brushes-on-white-textile-D5nh6mCW52c",
+      "medium": "colored pencil",
+      "description": "this is a colored pencil drawing",
+      "date": "2024-02-13",
+      "age": 32,
+      "featured": false
+    }
+  },
+  {
+    "model": "artpartyapi.artwork",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "artist": 2,
+      "title": "jv-artwork-1",
+      "img": "https://unsplash.com/photos/three-silver-paint-brushes-on-white-textile-D5nh6mCW52c",
+      "medium": "tempera paint",
+      "description": "this is a tempera painting",
+      "date": "2024-02-02",
+      "age": 3,
+      "featured": true
+    }
+  },
+  {
+    "model": "artpartyapi.artwork",
+    "pk": 4,
+    "fields": {
+      "user": 1,
+      "artist": 3,
+      "title": "mv-artwork-1",
+      "img": "https://unsplash.com/photos/three-silver-paint-brushes-on-white-textile-D5nh6mCW52c",
+      "medium": "crayon",
+      "description": "this is a crayon drawing",
+      "date": "2024-01-22",
+      "age": 1,
+      "featured": false
+    }
+  }
+]

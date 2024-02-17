@@ -1,0 +1,34 @@
+[
+  {
+    "model": "artpartyapi.artworktag",
+    "pk": 1,
+    "fields": {
+      "artwork": 1,
+      "tag": 1
+    }
+  },
+  {
+    "model": "artpartyapi.artworktag",
+    "pk": 2,
+    "fields": {
+      "artwork": 2,
+      "tag": 1
+    }
+  },
+  {
+    "model": "artpartyapi.artworktag",
+    "pk": 3,
+    "fields": {
+      "artwork": 3,
+      "tag": 2
+    }
+  },
+  {
+    "model": "artpartyapi.artworktag",
+    "pk": 4,
+    "fields": {
+      "artwork": 4,
+      "tag": 3
+    }
+  }
+]

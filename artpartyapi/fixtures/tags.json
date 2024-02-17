@@ -1,0 +1,23 @@
+[
+  {
+    "model": "artpartyapi.tag",
+    "pk": 1,
+    "fields": {
+      "label": "portrait"
+    }
+  },
+  {
+    "model": "artpartyapi.tag",
+    "pk": 2,
+    "fields": {
+      "label": "potatopeople"
+    }
+  },
+  {
+    "model": "artpartyapi.tag",
+    "pk": 3,
+    "fields": {
+      "label": "madeatdaycare"
+    }
+  }
+]
