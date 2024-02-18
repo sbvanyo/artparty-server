@@ -4,7 +4,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
 from artpartyapi.models import ArtworkTag
-
+from .tag import TagSerializer
 
 class ArtworkTagView(ViewSet):
     """ArtworkTag view"""
@@ -29,8 +29,8 @@ class ArtworkTagView(ViewSet):
 
 
 class ArtworkTagSerializer(serializers.ModelSerializer):
+    tag = TagSerializer()
     """JSON serializer for artworks"""
     class Meta:
         model = ArtworkTag
         fields = ('id', 'artwork', 'tag')
-        depth = 1
