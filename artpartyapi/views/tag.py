@@ -26,6 +26,17 @@ class TagView(ViewSet):
         tags = Tag.objects.all()
         serializer = TagSerializer(tags, many=True)
         return Response(serializer.data)
+    
+    
+    def create(self, request):
+        """Handle POST operations
+        Returns Response -- JSON serialized tag instance"""
+
+        tag = Tag.objects.create(
+            label=request.data["label"],
+        )
+        serializer = TagSerializer(tag)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TagSerializer(serializers.ModelSerializer):

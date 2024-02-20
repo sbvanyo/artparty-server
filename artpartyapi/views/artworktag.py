@@ -3,7 +3,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from artpartyapi.models import ArtworkTag
+from artpartyapi.models import ArtworkTag, Artwork, Tag
 from .tag import TagSerializer
 
 class ArtworkTagView(ViewSet):
@@ -27,6 +27,19 @@ class ArtworkTagView(ViewSet):
         serializer = ArtworkTagSerializer(artworktags, many=True)
         return Response(serializer.data)
 
+
+    def create(self, request):
+        """Handle POST operations
+        Returns Response -- JSON serialized artworktag instance"""
+        artwork = Artwork.objects.get(pk=request.data["artwork"])
+        tag = Tag.objects.get(pk=request.data["tag"])
+
+        artworktag = ArtworkTag.objects.create(
+            artwork=artwork,
+            tag=tag,
+        )
+        serializer = ArtworkTagSerializer(artworktag)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class ArtworkTagSerializer(serializers.ModelSerializer):
     tag = TagSerializer()

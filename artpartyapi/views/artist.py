@@ -3,7 +3,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from artpartyapi.models import Artist
+from artpartyapi.models import Artist, User
 
 
 class ArtistView(ViewSet):
@@ -26,6 +26,20 @@ class ArtistView(ViewSet):
         artists = Artist.objects.all()
         serializer = ArtistSerializer(artists, many=True)
         return Response(serializer.data)
+    
+    
+    def create(self, request):
+        """Handle POST operations
+        Returns Response -- JSON serialized artist instance"""
+        user = User.objects.get(pk=request.data["user"])
+
+        artist = Artist.objects.create(
+            name=request.data["name"],
+            img=request.data["img"],
+            user=user,
+        )
+        serializer = ArtistSerializer(artist)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ArtistSerializer(serializers.ModelSerializer):

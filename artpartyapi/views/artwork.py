@@ -3,6 +3,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
+from rest_framework.decorators import action
 from artpartyapi.models import Artwork, Artist, User, Tag, ArtworkTag
 from .artworktag import ArtworkTagSerializer
 
@@ -58,6 +59,37 @@ class ArtworkView(ViewSet):
         
         serializer = ArtworkSerializer(artwork, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
+      
+      
+    # Custom actions to add/remove ArtworkTags
+     
+    @action(methods=['post'], detail=True)
+    def add_artwork_tag(self, request, pk):
+        """Post request for a user to add an tag to an artwork"""
+
+        tag = Tag.objects.get(pk=request.data["tag"])
+        artwork = Artwork.objects.get(pk=pk)
+        artworktag = ArtworkTag.objects.create(
+            tag=tag,
+            artwork=artwork,
+        )
+        return Response({'message': 'Tag added to artwork'}, status=status.HTTP_201_CREATED)
+
+    @action(methods=['delete'], detail=True)
+    def remove_artwork_tag(self, request, pk):
+        """Delete request for a user to remove an tag from an artwork"""
+
+        artworktag_id = request.data.get("artwork_tag")
+        if not artworktag_id:
+            return Response({"error": "Artwork tag ID not provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            artwork_tag = ArtworkTag.objects.get(pk=artworktag_id, artwork__pk=pk)
+            artwork_tag.delete()
+            return Response({"message": "Artwork tag removed"}, status=status.HTTP_204_NO_CONTENT)
+        except ArtworkTag.DoesNotExist:
+            return Response({"error": "Artwork tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ArtworkSerializer(serializers.ModelSerializer):

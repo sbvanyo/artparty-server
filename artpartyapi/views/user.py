@@ -26,6 +26,20 @@ class UserView(ViewSet):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
+    
+    
+    def create(self, request):
+        """Handle POST operations
+        Returns Response -- JSON serialized user instance"""
+
+        user = User.objects.create(
+            name=request.data["name"],
+            email=request.data["email"],
+            img=request.data["img"],
+            uid=request.data["uid"],
+        )
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class UserSerializer(serializers.ModelSerializer):
