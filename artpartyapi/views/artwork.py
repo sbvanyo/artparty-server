@@ -59,6 +59,29 @@ class ArtworkView(ViewSet):
         
         serializer = ArtworkSerializer(artwork, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    
+    def update(self, request, pk):
+        """Handle PUT requests for a artwork
+        Returns: Response -- Empty body with 204 status code"""
+
+        artwork = Artwork.objects.get(pk=pk)
+        artwork.title = request.data["title"]
+        artwork.img = request.data["img"]
+        artwork.medium = request.data["medium"]
+        artwork.description = request.data["description"]
+        artwork.date = request.data["date"]
+        artwork.age = request.data["age"]
+        artwork.featured = request.data["featured"]
+
+        user = User.objects.get(pk=request.data["user"])
+        artist = Artist.objects.get(pk=request.data["artist"])
+        artwork.user = user
+        artwork.artist = artist
+        artwork.save()
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
       
       
       

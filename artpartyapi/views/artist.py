@@ -40,6 +40,22 @@ class ArtistView(ViewSet):
         )
         serializer = ArtistSerializer(artist)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    
+    def update(self, request, pk):
+        """Handle PUT requests for an artist
+        Returns: Response -- Empty body with 204 status code"""
+
+        artist = Artist.objects.get(pk=pk)
+        artist.name = request.data["name"]
+        artist.img = request.data["img"]
+
+        user = User.objects.get(pk=request.data["user"])
+        artist.user = user
+        artist.save()
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
 
 
 class ArtistSerializer(serializers.ModelSerializer):
