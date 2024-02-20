@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from rest_framework import routers
-from artpartyapi.views import ArtistView, ArtworkView, TagView, ArtworkTagView, UserView
+from artpartyapi.views import ArtistView, ArtworkView, TagView, ArtworkTagView, UserView, register_user, check_user
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'artists', ArtistView, 'artist')
@@ -30,4 +30,6 @@ router.register(r'users', UserView, 'user')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('register', register_user),
+    path('checkuser', check_user),
 ]
