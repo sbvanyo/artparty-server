@@ -40,6 +40,13 @@ class UserView(ViewSet):
         )
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    
+    def destroy(self, request, pk):
+        user = User.objects.get(pk=pk)
+        user.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        
 
 
 class UserSerializer(serializers.ModelSerializer):

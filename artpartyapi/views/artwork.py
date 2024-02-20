@@ -81,6 +81,13 @@ class ArtworkView(ViewSet):
         artwork.save()
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+    
+    
+    def destroy(self, request, pk):
+        artwork = Artwork.objects.get(pk=pk)
+        artwork.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        
 
       
       

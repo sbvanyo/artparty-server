@@ -40,6 +40,13 @@ class ArtworkTagView(ViewSet):
         )
         serializer = ArtworkTagSerializer(artworktag)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    
+    def destroy(self, request, pk):
+        artworktag = ArtworkTag.objects.get(pk=pk)
+        artworktag.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        
 
 class ArtworkTagSerializer(serializers.ModelSerializer):
     tag = TagSerializer()
