@@ -26,6 +26,11 @@ class ArtworkView(ViewSet):
         """Handle GET requests to get all artworks
         Returns: Response -- JSON serialized list of artworks"""
         artworks = Artwork.objects.all()
+        
+        artworkartist = request.query_params.get('artist', None)
+        if artworkartist is not None:
+            artworks = artworks.filter(artist=artworkartist)
+        
         serializer = ArtworkSerializer(artworks, many=True)
         return Response(serializer.data)
       
