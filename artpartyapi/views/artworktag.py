@@ -24,6 +24,11 @@ class ArtworkTagView(ViewSet):
         """Handle GET requests to get all artworktags
         Returns: Response -- JSON serialized list of artworktags"""
         artworktags = ArtworkTag.objects.all()
+        
+        singleartworktags = request.query_params.get('artwork', None)
+        if singleartworktags is not None:
+            artworktags = artworktags.filter(artwork=singleartworktags)
+        
         serializer = ArtworkTagSerializer(artworktags, many=True)
         return Response(serializer.data)
 

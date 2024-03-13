@@ -70,20 +70,52 @@ class ArtworkView(ViewSet):
         """Handle PUT requests for a artwork
         Returns: Response -- Empty body with 204 status code"""
 
-        artwork = Artwork.objects.get(pk=pk)
-        artwork.title = request.data["title"]
-        artwork.img = request.data["img"]
-        artwork.medium = request.data["medium"]
-        artwork.description = request.data["description"]
-        artwork.date = request.data["date"]
-        artwork.age = request.data["age"]
-        artwork.featured = request.data["featured"]
+        # artwork = Artwork.objects.get(pk=pk)
+        # artwork.title = request.data["title"]
+        # artwork.img = request.data["img"]
+        # artwork.medium = request.data["medium"]
+        # artwork.description = request.data["description"]
+        # artwork.date = request.data["date"]
+        # artwork.age = request.data["age"]
+        # artwork.featured = request.data["featured"]
 
-        user = User.objects.get(pk=request.data["user"])
-        artist = Artist.objects.get(pk=request.data["artist"])
-        artwork.user = user
-        artwork.artist = artist
+        # user = User.objects.get(pk=request.data["user"])
+        # artist = Artist.objects.get(pk=request.data["artist"])
+        # artwork.user = user
+        # artwork.artist = artist
+        
+        """Handle PUT requests for an artwork, allowing partial updates."""
+        artwork = Artwork.objects.get(pk=pk)
+
+        # Update only fields that are provided in the request
+        for field in ['title', 'img', 'medium', 'description', 'date', 'age', 'featured']:
+            if field in request.data:
+                setattr(artwork, field, request.data[field])
+
+        # Only update user and artist if they are explicitly provided
+        if 'user' in request.data:
+            user = User.objects.get(pk=request.data['user'])
+            artwork.user = user
+
+        if 'artist' in request.data:
+            artist = Artist.objects.get(pk=request.data['artist'])
+            artwork.artist = artist
+        
         artwork.save()
+    
+        # Update tags
+        current_tags_ids = set(artwork.tags.values_list('id', flat=True))
+        new_tags_ids = set(request.data.get("tags", []))
+
+        # Tags to add
+        tags_to_add = new_tags_ids - current_tags_ids
+        for tag_id in tags_to_add:
+            tag, created = Tag.objects.get_or_create(id=tag_id)
+            ArtworkTag.objects.create(artwork=artwork, tag=tag)
+
+        # Tags to remove
+        tags_to_remove = current_tags_ids - new_tags_ids
+        ArtworkTag.objects.filter(artwork=artwork, tag_id__in=tags_to_remove).delete()
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
     
@@ -134,7 +166,7 @@ class ArtworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artwork
         fields = ('id', 'user', 'artist', 'title', 'img', 'medium', 'description', 'date', 'age', 'featured', 'tags')
-        # depth = 1
+        depth = 1
         
     # Serializes artwork tags
     def get_tags(self, artwork):
