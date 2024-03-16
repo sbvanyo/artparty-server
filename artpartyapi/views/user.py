@@ -34,8 +34,6 @@ class UserView(ViewSet):
 
         user = User.objects.create(
             name=request.data["name"],
-            email=request.data["email"],
-            img=request.data["img"],
             uid=request.data["uid"],
         )
         serializer = UserSerializer(user)
@@ -53,5 +51,5 @@ class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""
     class Meta:
         model = User
-        fields = ('id', 'name', 'email', 'img', 'uid')
+        fields = ('id', 'name', 'uid')
         depth = 1

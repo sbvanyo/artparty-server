@@ -23,7 +23,19 @@ class ArtistView(ViewSet):
     def list(self, request):
         """Handle GET requests to get all artists
         Returns: Response -- JSON serialized list of artists"""
-        artists = Artist.objects.all()
+        # Retrieve the user's Django-assigned id from the query parameters
+        user_id = request.query_params.get('user', None)
+        
+        if user_id:
+            try: # Find user by id
+                user = User.objects.get(id=user_id)
+                artists = Artist.objects.filter(user=user)
+            except User.DoesNotExist:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            
+        else: # Return no artists if no uid is found
+            artists=Artist.objects.none()
+        
         serializer = ArtistSerializer(artists, many=True)
         return Response(serializer.data)
     

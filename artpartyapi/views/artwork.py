@@ -20,20 +20,32 @@ class ArtworkView(ViewSet):
             return Response(serializer.data)
         except Artwork.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
-
-
+    
     def list(self, request):
         """Handle GET requests to get all artworks
         Returns: Response -- JSON serialized list of artworks"""
+        user_id = request.query_params.get('user', None)
+        artist_id = request.query_params.get('artist', None)
+        
         artworks = Artwork.objects.all()
         
-        artworkartist = request.query_params.get('artist', None)
-        if artworkartist is not None:
-            artworks = artworks.filter(artist=artworkartist)
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                artworks = artworks.filter(user=user)
+            except User.DoesNotExist:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if artist_id:
+            try:
+                artist = Artist.objects.get(id=artist_id)
+                artworks = artworks.filter(artist=artist)
+            except Artist.DoesNotExist:
+                return Response({'message': 'Artist not found'}, status=status.HTTP_404_NOT_FOUND)
         
         serializer = ArtworkSerializer(artworks, many=True)
         return Response(serializer.data)
-      
+        
       
     def create(self, request):
         """Handle POST operations
@@ -67,23 +79,40 @@ class ArtworkView(ViewSet):
     
     
     def update(self, request, pk):
-        """Handle PUT requests for a artwork
+        """Handle PUT requests for an artwork, allowing partial updates.
         Returns: Response -- Empty body with 204 status code"""
-
+        
         artwork = Artwork.objects.get(pk=pk)
-        artwork.title = request.data["title"]
-        artwork.img = request.data["img"]
-        artwork.medium = request.data["medium"]
-        artwork.description = request.data["description"]
-        artwork.date = request.data["date"]
-        artwork.age = request.data["age"]
-        artwork.featured = request.data["featured"]
 
-        user = User.objects.get(pk=request.data["user"])
-        artist = Artist.objects.get(pk=request.data["artist"])
-        artwork.user = user
-        artwork.artist = artist
+        # Update only fields that are provided in the request
+        for field in ['title', 'img', 'medium', 'description', 'date', 'age', 'featured']:
+            if field in request.data:
+                setattr(artwork, field, request.data[field])
+
+        # Only update user and artist if they are explicitly provided
+        if 'user' in request.data:
+            user = User.objects.get(pk=request.data['user'])
+            artwork.user = user
+
+        if 'artist' in request.data:
+            artist = Artist.objects.get(pk=request.data['artist'])
+            artwork.artist = artist
+        
         artwork.save()
+    
+        # Update tags
+        current_tags_ids = set(artwork.tags.values_list('id', flat=True))
+        new_tags_ids = set(request.data.get("tags", []))
+
+        # Tags to add
+        tags_to_add = new_tags_ids - current_tags_ids
+        for tag_id in tags_to_add:
+            tag, created = Tag.objects.get_or_create(id=tag_id)
+            ArtworkTag.objects.create(artwork=artwork, tag=tag)
+
+        # Tags to remove
+        tags_to_remove = current_tags_ids - new_tags_ids
+        ArtworkTag.objects.filter(artwork=artwork, tag_id__in=tags_to_remove).delete()
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
     
@@ -134,7 +163,7 @@ class ArtworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artwork
         fields = ('id', 'user', 'artist', 'title', 'img', 'medium', 'description', 'date', 'age', 'featured', 'tags')
-        # depth = 1
+        depth = 1
         
     # Serializes artwork tags
     def get_tags(self, artwork):
