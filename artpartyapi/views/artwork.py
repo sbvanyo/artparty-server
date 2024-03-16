@@ -20,20 +20,32 @@ class ArtworkView(ViewSet):
             return Response(serializer.data)
         except Artwork.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
-
-
+    
     def list(self, request):
         """Handle GET requests to get all artworks
         Returns: Response -- JSON serialized list of artworks"""
+        user_id = request.query_params.get('user', None)
+        artist_id = request.query_params.get('artist', None)
+        
         artworks = Artwork.objects.all()
         
-        artworkartist = request.query_params.get('artist', None)
-        if artworkartist is not None:
-            artworks = artworks.filter(artist=artworkartist)
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                artworks = artworks.filter(user=user)
+            except User.DoesNotExist:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if artist_id:
+            try:
+                artist = Artist.objects.get(id=artist_id)
+                artworks = artworks.filter(artist=artist)
+            except Artist.DoesNotExist:
+                return Response({'message': 'Artist not found'}, status=status.HTTP_404_NOT_FOUND)
         
         serializer = ArtworkSerializer(artworks, many=True)
         return Response(serializer.data)
-      
+        
       
     def create(self, request):
         """Handle POST operations
@@ -67,24 +79,9 @@ class ArtworkView(ViewSet):
     
     
     def update(self, request, pk):
-        """Handle PUT requests for a artwork
+        """Handle PUT requests for an artwork, allowing partial updates.
         Returns: Response -- Empty body with 204 status code"""
-
-        # artwork = Artwork.objects.get(pk=pk)
-        # artwork.title = request.data["title"]
-        # artwork.img = request.data["img"]
-        # artwork.medium = request.data["medium"]
-        # artwork.description = request.data["description"]
-        # artwork.date = request.data["date"]
-        # artwork.age = request.data["age"]
-        # artwork.featured = request.data["featured"]
-
-        # user = User.objects.get(pk=request.data["user"])
-        # artist = Artist.objects.get(pk=request.data["artist"])
-        # artwork.user = user
-        # artwork.artist = artist
         
-        """Handle PUT requests for an artwork, allowing partial updates."""
         artwork = Artwork.objects.get(pk=pk)
 
         # Update only fields that are provided in the request

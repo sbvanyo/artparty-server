@@ -19,8 +19,6 @@ def check_user(request):
             'id': user.id,
             'uid': user.uid,
             'name': user.name,
-            'email': user.email,
-            'img': user.img
         }
         return Response(data)
     else:
@@ -37,8 +35,6 @@ def register_user(request):
     # Now save the user info in the artpartyapi_user table
     user = User.objects.create(
         name=request.data['name'],
-        email=request.data['email'],
-        img=request.data['img'],
         uid=request.data['uid']
     )
 
@@ -47,7 +43,5 @@ def register_user(request):
         'id': user.id,
         'uid': user.uid,
         'name': user.name,
-        'email': user.email,
-        'img': user.img
     }
     return Response(data)
