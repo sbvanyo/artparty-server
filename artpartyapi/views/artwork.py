@@ -24,8 +24,10 @@ class ArtworkView(ViewSet):
     def list(self, request):
         """Handle GET requests to get all artworks
         Returns: Response -- JSON serialized list of artworks"""
+        # Looking at query parameters in the url
         user_id = request.query_params.get('user', None)
         artist_id = request.query_params.get('artist', None)
+        featured = request.query_params.get('featured', None)
         
         artworks = Artwork.objects.all()
         
@@ -42,6 +44,10 @@ class ArtworkView(ViewSet):
                 artworks = artworks.filter(artist=artist)
             except Artist.DoesNotExist:
                 return Response({'message': 'Artist not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check if 'featured' query parameter is provided, then filter based on featured status; '.lower() == 'true'' ensures casing isn't an issue
+        if featured is not None:  
+            artworks = artworks.filter(featured=featured.lower() == 'true')  # 
         
         serializer = ArtworkSerializer(artworks, many=True)
         return Response(serializer.data)
